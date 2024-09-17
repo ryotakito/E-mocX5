@@ -1,7 +1,7 @@
 ; homea.g
 ; called to home the A axis
 ;
-; generated for E-moc X5 by HRMK
+; generated for E-moc X5 V2 by HRMK
 
 G91             	; relative positioning
 G1 H1 A-200 F500	; move quickly to A axis endstop and stop there (first pass)
