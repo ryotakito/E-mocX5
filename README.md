@@ -76,6 +76,31 @@ Duet3 MainBoard 6HCの制御に必要なconfig.gファイルなどは，Duet3 Ma
 直動軸の可動部品を移動範囲端の構造部材に意図的に衝突させ，ステッピングモータの電流変化を制御基板で検知することで機械原点を設定します．
 詳細は[Duet3D社のドキュメント](https://docs.duet3d.com/en/User_manual/Connecting_hardware/Sensors_stall_detection)とDuet3 MainBoard 6HCのsysフォルダを参考にしてください．
 
+## NCプログラム
+E-mocX5の制御に使用しているDuet3Dは工具先端点制御（TCP制御）に対応していません．よって，NCプログラムを作成する段階で，意図する移動を細かく指示する必要があります．また，CAMで指示するワーク座標系の原点とE-mocX5上で指示するワーク座標系の原点が一致していなければなりません．よって，大きいワークを用意し，周りを削ることで原点位置を一致させました．  
+私達がこれまで加工した工作物はメインプロセッサとして市販のCAMソフトウェアを使用し，CLデータを生成し，ポストプロセッサは自作したものを使用していました．メインプロセッサの処理を行うと，工具位置$\mathbf{P}=（P_x，P_y，P_z）$と工具軸ベクトル$\overrightarrow{T}=（T_x，T_y，T_z）$が生成されます．これを下記の計算式をに当てはめ，各軸の移動量を計算します．  
+```math
+\begin{align}
+&A=\frac{180}{\pi}\cos^{-1}(T_z) \\
+&C = \left\{
+\begin{array}{ll}
+\frac{180}{\pi}\mathrm{sgn}(T_y)\cos^{-1}(\frac{T_y}{\sqrt{T_x^2，T_y^2}}) & (T_z \neq 1)\\
+arbitrary & (T_z = 1)
+\end{array}
+\right.\\
+&\mathrm{sgn}(a) = \left\{
+\begin{array}{ll}
+1 & (a \geqq 0)\\
+-1 & (a < 0)
+\end{array}
+\right.\\
+&X=\frac{(SC\times P_y+CC\times P_x)}{(SC^2+CC^2)}\\  
+&Y=-\frac{-(SA\times SC^2\times P_z)-CC^2\times SA\times P_z-CA\times CC\times P_y+CA\times SC\times P_x+(SA\times SC^2+CC^2\times SA)\times az}{(SA^2+CA^2)\times SC^2+CC^2\times SA^2+CA^2\times CC^2}\\  
+&Z=\frac{CA\times SC^2\times P_z+CA\times CC^2\times P_z-CC\times SA\times P_y+SA\times SC\times P_x+((SA^2+CA^2-CA)\times SC^2+CC^2\times SA^2+(CA^2-CA)\times CC^2)\times az}{((SA^2+CA^2)\times SC^2+CC^2\times SA^2+CA^2\times CC^2}\\  
+\end{align}
+```
+ここで，$SA=\sin(A)$，$SC=\sin(C)$，$CA=\cos(A)$，$CC=\cos(C)$，$az$はA軸回転軸中心とテーブルまでの距離100mmです．また，C軸の回転量は-180°から180°で計算されますが，実際にモータを制御するDuet3Dは回転角度を判断することができません．具体的にいうと，－180°=180°を判断できず，-180°の位置で180°へ司令すると，360°回転して元の位置に戻ります．言わば直動軸と同じような動作をします．よって，1つ前の角度を確認し数値を調整する必要があります．  
+
 ## ライセンス
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)  
 ![CC BY](./image/by.jpg "CC BY")
