@@ -96,7 +96,7 @@ arbitrary & (T_z = 1)
 \right.\\
 &X=\frac{(SC\times P_y+CC\times P_x)}{(SC^2+CC^2)}\\  
 &Y=-\frac{-(SA\times SC^2\times P_z)-CC^2\times SA\times P_z-CA\times CC\times P_y+CA\times SC\times P_x+(SA\times SC^2+CC^2\times SA)\times az}{(SA^2+CA^2)\times SC^2+CC^2\times SA^2+CA^2\times CC^2}\\  
-&Z=\frac{CA\times SC^2\times P_z+CA\times CC^2\times P_z-CC\times SA\times P_y+SA\times SC\times P_x+((SA^2+CA^2-CA)\times SC^2+CC^2\times SA^2+(CA^2-CA)\times CC^2)\times az}{((SA^2+CA^2)\times SC^2+CC^2\times SA^2+CA^2\times CC^2}\\  
+&Z=\frac{CA\times SC^2\times P_z+CA\times CC^2\times P_z-CC\times SA\times P_y+SA\times SC\times P_x+((SA^2+CA^2-CA)\times SC^2+CC^2\times SA^2+(CA^2-CA)\times CC^2)\times az}{(SA^2+CA^2)\times SC^2+CC^2\times SA^2+CA^2\times CC^2}\\  
 \end{align}
 ```
 ここで，$`SA=\sin(A)`$，$`SC=\sin(C)`$，$`CA=\cos(A)`$，$`CC=\cos(C)`$，$`az`$はA軸回転軸中心とテーブルまでの距離100mmです．また，C軸の回転量は-180°から180°で計算されますが，実際にモータを制御するDuet3Dは回転角度を判断することができません．具体的にいうと，－180°=180°を判断できず，-180°の位置で180°へ司令すると，360°回転して元の位置に戻ります．言わば直動軸と同じような動作をします．よって，1つ前の角度を確認し数値を調整する必要があります．  
